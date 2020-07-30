@@ -1,14 +1,13 @@
--- ~\~ language=Haskell filename=Problems/W0103.hs
--- ~\~ begin <<docs/README.md|Problems/W0103.hs>>[0]
-module Problems.W0103 where
--- |  The idea of merge sort is to
---    split a list into two more or less equal parts, sort them recursively,
---    and then merge two sorted lists using a dedicated merge function.
----   returns the list of all permutations of the argument
---
--- >>> mergesort [6,5,3,1,8,7,2,4]
--- [1,2,3,4,5,6,7,8]
+module W0103 where
 
-mergesort :: [Int] -> [Int]
-mergesort = undefined
--- ~\~ end
+data Tree a = Leaf a | Node (Tree a) (Tree a) deriving Show
+
+splitleft :: Tree a -> (a, Maybe (Tree a))
+splitleft (Leaf a  ) = (a, Nothing)
+splitleft (Node l r) = case splitleft l of
+  (a, Nothing) -> (a, Just r)
+  (a, Just l') -> (a, Just (Node l' r))
+
+-- | A tail-recursive version of @'splitleft'@.
+splitleft' :: Tree a -> (a, Maybe (Tree a))
+splitleft' = error "TODO: implement splitleft'"
