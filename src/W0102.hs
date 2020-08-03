@@ -8,11 +8,7 @@ module W0102 where
 -- [1,2,3,4,5,6,7,8]
 --
 mergesort :: Ord a => [a] -> [a]
-mergesort []  = []
-mergesort [x] = [x]
-mergesort xs =
-  let (ys, zs) = split xs
-  in  merge (mergesort ys) (mergesort zs)
+mergesort = error "TODO: implement mergesort"
 
 -- | Merges two (sorted) lists.
 --
@@ -20,17 +16,9 @@ mergesort xs =
 -- "AABDEFX"
 --
 merge :: Ord a => [a] -> [a] -> [a]
-merge []           ys         = ys
-merge xs           []         = xs
-merge xs@(x : xs') ys@(y : ys')
-  | x <= y                    = x : merge xs' ys
-  | otherwise                 = y : merge xs ys'
+merge = error "TODO: implement merge"
 
 -- | Splits a list into two lists of almost equal length.
 --
 split :: [a] -> ([a], [a])
-split []           = ([], [])
-split [x]          = ([x], [])
-split (x : y : zs) =
-  let (xs, ys) = split zs
-  in  (x : xs, y : ys)
+split = error "TODO: implement split"
