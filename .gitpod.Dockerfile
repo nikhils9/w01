@@ -3,9 +3,8 @@ FROM gitpod/workspace-base
 RUN sudo apt-get update
 RUN sudo curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 ENV PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
-RUN ghcup install hls 1.4.0 
- && ghcup install ghc 8.10.4 
- && ghcup install cabal 3.2.0.0 
- && ghcup set hls 1.4.0 
- && ghcup set ghc 8.10.4 
+RUN ghcup install hls 1.4.0 && ghcup install ghc 8.10.4 \
+ && ghcup install cabal 3.2.0.0 \
+ && ghcup set hls 1.4.0 \
+ && ghcup set ghc 8.10.4 \
  && ghcup set cabal 3.2.0.0
