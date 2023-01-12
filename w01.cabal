@@ -26,7 +26,12 @@ library
 executable w0106
   hs-source-dirs:      app
   main-is:             W0106.hs
-  build-depends:       base >= 4.7 && < 5
+  build-depends:       base >= 4.7 && < 5,
+                       cryptonite,
+                       directory,
+                       bytestring,
+                       optparse-applicative
+                       
   ghc-options:         -Wall
   default-language:    Haskell2010
 
@@ -42,10 +47,11 @@ test-Suite w01-tests
   Build-Depends:        base >= 4.7 && < 5
                       , hspec
                       , QuickCheck
+                      , containers
                       , w01
   build-tool-depends:   hspec-discover:hspec-discover
   default-language:     Haskell2010
-  ghc-options:          -Wall
+  ghc-options:          -Wall -fhpc
 
 test-suite w01-doctests
   type:                 exitcode-stdio-1.0

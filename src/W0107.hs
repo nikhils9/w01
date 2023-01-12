@@ -8,28 +8,67 @@ echo :: GP a
 echo = Get (\n -> Put n echo)
 
 run :: GP a -> IO a
-run = error "TODO: implement run"
+run (End a) = return a
+run (Get f) = putStr "? " >> (readLn :: IO Int) >>= run . f
+run (Put a gp) = putStrLn (show a) >> run gp
 
 add :: GP ()
-add = error "TODO: implement add"
+add = Get $ \n1 ->
+    Get $ \n2 ->
+        Put (n1 + n2) (End ())
+
+add' :: GP Int
+add' = Get $ \n1 ->
+    Get $ \n2 ->
+        Put (n1 + n2) (End (n1 + n2))
+
+startAccum :: Int -> GP Int
+startAccum t =
+    Get $ \n ->
+        if n == 0
+            then End t
+            else Put (t+n) $ startAccum (t+n)
 
 accum :: GP Int
-accum = error "TODO: implement accum"
+accum = start 0
+    where 
+        start :: Int -> GP Int
+        start t = 
+            Get $ \n ->
+                if n == 0
+                    then End t
+                    else Put (t+n) $ start (t+n)
 
 simulate :: GP a -> [Int] -> (a, [Int])
-simulate = error "TODO: implement simulate"
+simulate (End a) _ = (a, [])
+simulate (Get _) [] = error "insufficient input"
+simulate (Put o gp) xs = 
+    let (x, y) = simulate gp xs
+    in (x, o:y)
+simulate (Get f) (x:xs) = simulate (f x) xs
+
 
 instance Functor GP where
-    fmap = error "TODO: implement fmap"
+    fmap f (End a) = End (f a)
+    fmap f (Get gf) = Get ((fmap f) . gf)
+    fmap f (Put o gp) = Put o (fmap f gp)
 
 instance Applicative GP where
 
-    pure = error "TODO: implement pure"
+    pure = End
 
-    (<*>) = error "TODO: implement (<*>)"
+    (End f) <*> (End a) = End (f a)
+    (End f) <*> (Get gf) = Get ((fmap f).gf)
+    (End f) <*> (Put o gp) = Put o (fmap f gp)
+    (Get gf) <*> gp = Get $ \n -> (gf n) <*> gp
+    (Put o gf) <*> gp = Put o (gf <*> gp)
 
 instance Monad GP where
 
-    return = error "TODO: implement return"
+    return = End
 
-    (>>=) = error "TODO: implement (>>=)"
+    (End a) >>= f = f a
+    (Get gf) >>= f = Get $ \n -> (gf n) >>= f
+    (Put o gp) >>= f = Put o $ gp >>= f
+
+-- Unable to come up with any function implementation using (>>=). Checked solution for it.
