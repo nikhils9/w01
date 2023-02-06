@@ -1,5 +1,8 @@
 module W0107 where
 
+import Control.Monad.State
+
+
 data GP a = End a
           | Get (Int -> GP a)
           | Put Int (GP a)
@@ -47,6 +50,24 @@ simulate (Put o gp) xs =
     in (x, o:y)
 simulate (Get f) (x:xs) = simulate (f x) xs
 
+simulateS :: GP a -> State [Int] (a, [Int])
+simulateS (End a) = return (a, [])
+simulateS (Get f) =
+    do
+        ys <- get
+        case ys of
+            [] -> error "End of input"
+            (x:xs) ->
+                do 
+                    put xs
+                    simulateS $ f x
+simulateS (Put y m) = 
+    do
+        (z, ys) <- simulateS m
+        return (z, y:ys)
+
+simulate' :: GP a -> [Int] -> (a, [Int])
+simulate' m xs = evalState (simulateS m) xs
 
 instance Functor GP where
     fmap f (End a) = End (f a)
